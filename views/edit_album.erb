@@ -6,7 +6,9 @@
   <label for="name">Rename album</label>
   <input id="name" name="name" type="text" value="<%= @album.name() %>">
   <label for="name">Edit album year</label>
-  <input id="name" name="year" type="text" value="<%= @album.album_year() %>">
+  <input id="year" name="year" type="text" value="<%= @album.album_year() %>">
+  <label for="cost">Edit album cost</label>
+  <input id="cost" name="cost" type="text" value="<%= @album.cost() %>">
 
   <button type="submit">Update</button>
 </form>

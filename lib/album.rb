@@ -1,12 +1,13 @@
 class Album
-  attr_accessor :name
-  attr_reader :id, :album_year
+  attr_accessor :name, :album_year, :cost
+  attr_reader :id
 
 
 
   def initialize(attributes)
     @name = attributes.fetch(:name)
     @album_year = attributes.fetch(:album_year) || 1197
+    @cost = attributes.fetch(:cost) || 0
     @id = attributes.fetch(:id)
   end
 
@@ -16,26 +17,65 @@ class Album
     returned_albums.each() do |album|
       name = album.fetch("name")
       year = album.fetch("album_year").to_i
+      cost = album.fetch("cost").to_i
       id = album.fetch("id").to_i
-      albums.push(Album.new({:name => name, :album_year => year, :id => id}))
+      albums.push(Album.new({:name => name, :album_year => year, :cost => cost, :id => id}))
     end
     albums
   end
 
   def self.year
-    returned_albums = DB.exec("SELECT * FROM albums ORDER BY album_year::int;")
+    returned_albums = DB.exec("SELECT * FROM albums ORDER BY ALBUM_YEAR ASC;")
     albums = []
     returned_albums.each() do |album|
       name = album.fetch("name")
       year = album.fetch("album_year").to_i
+      cost = album.fetch("cost").to_i
       id = album.fetch("id").to_i
-      albums.push(Album.new({:name => name, :album_year => year, :id => id}))
+      albums.push(Album.new({:name => name, :album_year => year, :cost => cost, :id => id}))
     end
     albums
   end
 
+  def self.high_to_low
+    returned_albums = DB.exec("SELECT * FROM albums ORDER BY COST DESC;")
+    albums = []
+    returned_albums.each() do |album|
+      name = album.fetch("name")
+      year = album.fetch("album_year").to_i
+      cost = album.fetch("cost").to_i
+      id = album.fetch("id").to_i
+      albums.push(Album.new({:name => name, :album_year => year, :cost => cost, :id => id}))
+    end
+    albums
+  end
+
+  def self.low_to_high
+    returned_albums = DB.exec("SELECT * FROM albums ORDER BY COST ASC;")
+    albums = []
+    returned_albums.each() do |album|
+      name = album.fetch("name")
+      year = album.fetch("album_year").to_i
+      cost = album.fetch("cost").to_i
+      id = album.fetch("id").to_i
+      albums.push(Album.new({:name => name, :album_year => year, :cost => cost, :id => id}))
+    end
+    albums
+  end
+
+  def self.random
+    album = []
+    result = DB.exec("SELECT * FROM albums ORDER BY RANDOM() LIMIT 1;").first
+    name = result.fetch("name")
+    year = result.fetch("album_year").to_i
+    cost = result.fetch("cost").to_i
+    id = result.fetch("id").to_i
+    album.push(Album.new({:name => name, :album_year => year, :cost => cost, :id => id}))
+    return album
+  end
+
   def save
-    result = DB.exec("INSERT INTO albums (name, album_year) VALUES ('#{@name}', #{@album_year}) RETURNING id;")
+    result = DB.exec("INSERT INTO albums (name, album_year, cost) VALUES ('#{@name}', #{@album_year}, #{@cost}) RETURNING id;")
     @id = result.first().fetch("id").to_i
   end
 
@@ -52,18 +92,21 @@ class Album
     if album
       name = album.fetch("name")
       year = album.fetch("album_year").to_i
+      cost = album.fetch("cost").to_i
       id = album.fetch("id").to_i
-      Album.new({:name => name, :album_year => year, :id => id})
+      Album.new({:name => name, :album_year => year, :cost => cost, :id => id})
     else
       nil
     end
   end
 
-  def update(name, year)
+  def update(name, year, cost)
     @name = name
     @album_year = year
+    @cost = cost
     DB.exec("UPDATE albums SET name = '#{@name}' WHERE id = #{@id};")
     DB.exec("UPDATE albums SET album_year = '#{@album_year}' WHERE id = #{@id};")
+    DB.exec("UPDATE albums SET cost = '#{@cost}' WHERE id = #{@id};")
   end
 
   def delete
