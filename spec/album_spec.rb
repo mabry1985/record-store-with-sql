@@ -1,3 +1,4 @@
+require('spec_helper')
 require 'rspec'
 require 'album'
 require 'song'
@@ -5,17 +6,13 @@ require 'pry'
 
 describe '#Album' do
 
-  before(:each) do
-    Album.clear
-    Song.clear
-  end
 
   describe('.all') do
     it("returns an empty array when there are no albums") do
       expect(Album.all).to(eq([]))
     end
   end
-
+  #
   describe('#save') do
     it("saves an album") do
       album = Album.new({:name => "A Love Supreme", :id => nil})
@@ -25,7 +22,7 @@ describe '#Album' do
       expect(Album.all).to(eq([album, album2]))
     end
   end
-
+  #
   describe('.clear') do
     it("clears all albums") do
       album = Album.new({:name => "A Love Supreme", :id => nil})
@@ -36,7 +33,7 @@ describe '#Album' do
       expect(Album.all).to(eq([]))
     end
   end
-
+  #
   describe('#==') do
     it("is the same album if it has the same attributes as another album") do
       album = Album.new({:name => "Blue", :id => nil})
@@ -54,7 +51,7 @@ describe '#Album' do
       expect(Album.find(album.id)).to(eq(album))
     end
   end
-
+  #
   describe('#update') do
     it("updates an album by id") do
       album = Album.new({:name => "A Love Supreme", :id => nil})
