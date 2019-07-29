@@ -21,9 +21,16 @@ get ('/albums/new') do
   erb(:new_album)
 end
 
+get ('/albums/sort/year') do
+  @albums = Album.year
+  erb(:albums)
+  redirect to('/albums')
+end
+
 post ('/albums') do
+  year = params[:year].to_i()
   name = params[:album_name]
-  album = Album.new({:name => name, :id => nil})
+  album = Album.new({:name => name, :album_year => year, :id => nil})
   album.save()
   redirect to('/albums')
 end
@@ -40,7 +47,7 @@ end
 
 patch ('/albums/:id') do
   @album = Album.find(params[:id].to_i())
-  @album.update(params[:name])
+  @album.update(params[:name],params[:year])
   redirect to('/albums')
 end
 
