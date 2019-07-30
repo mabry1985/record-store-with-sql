@@ -9,7 +9,7 @@ describe '#Album' do
 
   describe('.all') do
     it("returns an empty array when there are no albums") do
-      expect(Album.all).to(eq([]))
+      expect(Artist.all).to(eq([]))
     end
   end
   #
@@ -56,7 +56,7 @@ describe '#Album' do
     it("updates an album by id") do
       album = Album.new({:name => "A Love Supreme", :id => nil})
       album.save()
-      album.update({name: "A Love Supreme"})
+      album.update("A Love Supreme")
       expect(album.name).to(eq("A Love Supreme"))
     end
   end

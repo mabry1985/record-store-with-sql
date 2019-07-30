@@ -6,9 +6,22 @@ class Album
 
   def initialize(attributes)
     @name = attributes.fetch(:name)
-    @album_year = attributes.fetch(:album_year) || 1197
-    @cost = attributes.fetch(:cost) || 0
+    # @album_year = attributes.fetch(:album_year) || 1197
+    # @cost = attributes.fetch(:cost) || 0
     @id = attributes.fetch(:id)
+    (attributes.key? :album_year) ? @album_year = attributes.fetch(:album_year).to_i : @album_year = 1960
+   (attributes.key? :cost) ? @cost = attributes.fetch(:cost).to_i : @cost = 10
+
+  # if(attributes.key? :release_year)
+  #   @release_year = attributes.fetch(:release_year).to_i
+  # else
+  #   @release_year = 1960
+  # end
+  # if(attributes.key? :price)
+  #   @cost = attributes.fetch(:price).to_i
+  # else
+  #   @cost = 10
+  # end
   end
 
   def self.all
@@ -100,12 +113,12 @@ class Album
     end
   end
 
-  def update(name, year, cost)
-    @name = name
-    @album_year = year
-    @cost = cost
+  def update(attributes)
+    @name = attributes.fetch(:name)
+    (attributes.key? :album_year) ? @album_year = attributes.fetch(:album_year).to_i : @album_year = 1960
+   (attributes.key? :cost) ? @cost = attributes.fetch(:cost).to_i : @cost = 10
     DB.exec("UPDATE albums SET name = '#{@name}' WHERE id = #{@id};")
-    DB.exec("UPDATE albums SET album_year = '#{@album_year}' WHERE id = #{@id};")
+    DB.exec("UPDATE albums SET album_year = #{@album_year} WHERE id = #{@id};")
     DB.exec("UPDATE albums SET cost = '#{@cost}' WHERE id = #{@id};")
   end
 
