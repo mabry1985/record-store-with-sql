@@ -51,15 +51,17 @@ describe '#Artist' do
       expect(Artist.find(artist.id)).to(eq(artist))
     end
   end
-  #
+
   describe('#update') do
-    it("updates an artist by id") do
-      artist = Artist.new({:name => "Tupac", :id => nil, :album_id => 1, :song_id => 1})
-      artist.save()
-      artist.update("Tupac")
-      expect(artist.name).to(eq("Tupac"))
-    end
+  it("adds an album to an artist") do
+    artist = Artist.new({:name => "John Coltrane", :id => nil, :album_id => 1, :song_id => 1})
+    artist.save()
+    album = Album.new({:name => "A Love Supreme", :id => nil, :album_id => 1, :song_id => 1})
+    album.save()
+    artist.update({:album_name => "A Love Supreme"})
+    expect(artist.albums).to(eq([album]))
   end
+end
 
   describe('#delete') do
     it("deletes an artist by id") do

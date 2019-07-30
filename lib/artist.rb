@@ -1,6 +1,6 @@
 class Artist
   attr_reader :id
-  attr_accessor :name, :album_id
+  attr_accessor :name, :album_id, :song_id
 
   def initialize(attributes)
     @name = attributes.fetch(:name)
@@ -38,22 +38,30 @@ class Artist
       album_id = artist.fetch("album_id").to_i
       song_id = artist.fetch("song_id").to_i
       id = artist.fetch("id").to_i
-      artist.new({:name => name, :album_id => album_id, :song_id => song_id, :id => id})
+      Artist.new({:name => name, :album_id => album_id, :song_id => song_id, :id => id})
     else
       nil
     end
   end
 
-  def update(name, album_id)
-    @name = name
-    @album_id = album_id
-    @song_id = song_id
-    DB.exec("UPDATE artists SET name = '#{@name}', album_id = #{@album_id}, song_id = #{@song_id} WHERE id = #{@id};")
+  def update(attributes)
+  if (attributes.has_key?(:name)) && (attributes.fetch(:name) != nil)
+    @name = attributes.fetch(:name)
+    DB.exec("UPDATE artists SET name = '#{@name}' WHERE id = #{@id};")
+  end
+  album_name = attributes.fetch(:album_name)
+  if album_name != nil
+    album = DB.exec("SELECT * FROM albums WHERE lower(name)='#{album_name.downcase}';").first
+    if album != nil
+      DB.exec("INSERT INTO albums_artists (album_id, artist_id) VALUES (#{album['id'].to_i}, #{@id});")
+    end
+  end
   end
 
-  def delete
-    DB.exec("DELETE FROM artists WHERE id = #{@id};")
-  end
+def delete
+  DB.exec("DELETE FROM albums_artists WHERE artist_id = #{@id};")
+  DB.exec("DELETE FROM artists WHERE id = #{@id};")
+end
 
   def self.clear
     DB.exec("DELETE FROM artists *;")
@@ -65,7 +73,7 @@ class Artist
     returned_artists.each() do |artist|
       name = artist.fetch("name")
       id = artist.fetch("id").to_i
-      artists.push(artist.new({:name => name, :album_id => alb_id, :song_id => song_id, :id => id}))
+      artists.push(Artist.new({:name => name, :album_id => alb_id, :song_id => song_id, :id => id}))
     end
     artists
   end
@@ -80,5 +88,17 @@ class Artist
   else
     false
   end
+  end
+
+  def albums
+  albums = []
+  results = DB.exec("SELECT album_id FROM albums_artists WHERE artist_id = #{@id};")
+  results.each() do |result|
+    album_id = result.fetch("album_id").to_i()
+    album = DB.exec("SELECT * FROM albums WHERE id = #{album_id};")
+    name = album.first().fetch("name")
+    albums.push(Album.new({:name => name, :id => album_id}))
+  end
+  albums
   end
 end
