@@ -1,4 +1,4 @@
-class artist
+class Artist
   attr_reader :id
   attr_accessor :name, :album_id
 
@@ -20,7 +20,8 @@ class artist
       name = artist.fetch("name")
       album_id = artist.fetch("album_id").to_i
       id = artist.fetch("id").to_i
-      artists.push(artist.new({:name => name, :album_id => album_id, :id => id}))
+      song_id = artist.fetch("song_id").to_i
+      artists.push(Artist.new({:name => name, :album_id => album_id, :id => id, :song_id => song_id}))
     end
     artists
   end

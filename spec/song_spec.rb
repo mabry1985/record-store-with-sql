@@ -1,8 +1,4 @@
 require('spec_helper')
-require 'rspec'
-require 'song'
-require 'album'
-require 'pry'
 
 describe '#Song' do
   before(:each) do
@@ -12,7 +8,6 @@ describe '#Song' do
 
   describe('#==') do
     it("is the same song if it has the same attributes as another song") do
-      pry
       song = Song.new({:name => "Naima", :album_id => @album.id, :id => nil})
       song2 = Song.new({:name => "Naima", :album_id => @album.id, :id => nil})
       expect(song).to(eq(song2))
